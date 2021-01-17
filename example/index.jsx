@@ -2,12 +2,21 @@ import React from "react";
 import ReactDOM from "react-dom";
 import BraftFinder, { ImageUtils } from "../src";
 
+export const ValidType = {
+  PNG: 'image/png',
+  GIF: 'image/gif',
+  JPEG: 'image/jpeg',
+  WEBP: 'image/webp',
+  APNG: 'image/apng',
+  SVG: 'image/svg',
+  MP4: 'video/mp4',
+  MP3: 'video/mp3'
+}
+
 class Demo extends React.Component {
   constructor(props) {
     super(props);
-    this.braftFinder = new BraftFinder({
-      language: "pl"
-    });
+    this.braftFinder = new BraftFinder({});
   }
 
   beforeRemove = items => {
@@ -15,6 +24,7 @@ class Demo extends React.Component {
   };
 
   handelFileSelect = files => {
+    console.log('get', files)
     return [].slice.call(files, 0, 3);
   };
 
@@ -25,10 +35,11 @@ class Demo extends React.Component {
       <div className="demo">
         <FinderComponent
           accepts={{
-            audio: false,
-            video: false
+            image: [ ValidType.PNG, ValidType.JPEG, ValidType.GIF, ValidType.WEBP, ValidType.APNG, ValidType.SVG ].join(','),
+            video: ValidType.MP4,
+            audio: ValidType.MP3
           }}
-          language="ru"
+          language="zh"
           onSelect={item => console.log("seleced:", item)}
           onBeforeSelect={item => console.log("will select:", item)}
           onDeselect={item => console.log("deselected:", item)}

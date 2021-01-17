@@ -12,7 +12,7 @@ export default class BraftFinder extends FinderController {
   }
 
   ReactComponent = (props = {}) => {
-
+    console.warn('props', props)
     const componentProps = {
       ...this.superProps,
       ...props

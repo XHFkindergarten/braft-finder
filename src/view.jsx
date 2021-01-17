@@ -97,10 +97,27 @@ export default class BraftFinderView extends React.Component {
     this.controller.offChange(this.changeListenerId)
   }
 
+  formatAccepts = (target) => {
+    if (Array.isArray(target)) {
+      return target.map(_ => this.formatAccepts(_))
+    }
+    return target.replace(/(image\/|video\/)/g, '')
+  }
+
   render () {
 
-    const { language, externals } = this.props
+    const { language, externals, accepts } = this.props
     const { items, draging, confirmable, fileAccept, external, showExternalForm, allowExternal } = this.state
+
+    const {
+      image = '',
+      audio = '',
+      video = ''
+    } = accepts
+
+    const acceptImage = this.formatAccepts(image)
+    const acceptVideo = this.formatAccepts(video)
+    const acceptAudio = this.formatAccepts(audio)
 
     return (
       <div className="braft-finder">
@@ -111,10 +128,19 @@ export default class BraftFinderView extends React.Component {
           className="bf-uploader"
         >
           <div className={"bf-drag-uploader " + (draging || !items.length ? 'active ' : ' ') + (draging ? 'draging' : '')}>
-            <span className="bf-drag-tip">
+            <div className="bf-drag-tip">
               <input accept={fileAccept} onChange={this.reslovePickedFiles} multiple type="file"/>
               {draging ? language.dropTip : language.dragTip}
-            </span>
+            </div>
+            <div className='bf-accept-tip'>
+              支持的图片类型 {acceptImage.toString()}
+            </div>
+            <div className='bf-accept-tip'>
+              支持的视频类型 {acceptVideo.toString()}
+            </div>
+            <div className='bf-accept-tip'>
+              支持的音频类型 {acceptAudio.toString()}
+            </div>
           </div>
           {items.length ? (
             <div className="bf-list-wrap">
@@ -139,9 +165,12 @@ export default class BraftFinderView extends React.Component {
                   {externals.image ? <button type="button" onClick={this.switchExternalType} data-type="IMAGE">{language.image}</button> : null}
                   {externals.audio ? <button type="button" onClick={this.switchExternalType} data-type="AUDIO">{language.audio}</button> : null}
                   {externals.video ? <button type="button" onClick={this.switchExternalType} data-type="VIDEO">{language.video}</button> : null}
-                  {externals.embed ? <button type="button" onClick={this.switchExternalType} data-type="EMBED">{language.embed}</button> : null}
+                  {/* {externals.embed ? <button type="button" onClick={this.switchExternalType} data-type="EMBED">{language.embed}</button> : null} */}
                 </div>
                 <span className="bf-external-tip">{language.externalInputTip}</span>
+                { external.type === 'IMAGE' && <span className="bf-external-tip">可使用的图片类型 {acceptImage.toString()}</span> }
+                { external.type === 'VIDEO' && <span className="bf-external-tip">可使用的视频类型 {acceptVideo.toString()}</span> }
+                { external.type === 'AUDIO' && <span className="bf-external-tip">可使用的音频类型 {acceptAudio.toString()}</span> }
               </div>
             </div>
           ) : null}
